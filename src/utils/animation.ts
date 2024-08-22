@@ -1,9 +1,11 @@
 import gsap from 'gsap';
 
+// Slow down the hero animation
+// Start with one card
+
 // Global variables and utility functions
 const container = document.querySelector('.conversation_contain') as HTMLElement;
 const messages = Array.from(container.querySelectorAll('.conversation_card')) as HTMLElement[];
-
 const getMessageHeight = (message: HTMLElement): number => {
   return message.offsetHeight;
 };
@@ -36,7 +38,7 @@ export function animatePulse(
     .to(stops[3], { attr: { offset: endOffset[3] }, delay: 0.2, duration: 3 }, 0);
 }
 
-export function animateCards() {
+export const animateCards = (rotationDelay: number = 4) => {
   const container = document.querySelector('.conversation_contain') as HTMLElement;
   const messages = Array.from(container.querySelectorAll('.conversation_card')) as HTMLElement[];
 
@@ -45,12 +47,12 @@ export function animateCards() {
   const current = messages[currentIndex];
   const next = messages[(currentIndex + 1) % messages.length];
   const hidden = messages[(currentIndex + 2) % messages.length];
-
-  const currentHeight = getMessageHeight(current);
   const nextHeight = getMessageHeight(next);
 
+  // Master timeline for Card animation
   const tl = gsap.timeline({
-    delay: 2.6,
+    // time in between conversation rotation
+    delay: rotationDelay,
     ease: 'power3.out',
     onComplete: () => {
       currentIndex = (currentIndex + 1) % messages.length;
@@ -59,6 +61,7 @@ export function animateCards() {
     },
   });
 
+  // Top card animation
   tl.fromTo(
     current,
     { opacity: 1, y: 0, filter: 'blur(0px)' },
@@ -73,6 +76,7 @@ export function animateCards() {
     },
     '-=0.4'
   )
+    // Middle card
     .to(
       next,
       {
@@ -81,23 +85,46 @@ export function animateCards() {
       },
       '-=0.4'
     )
+    // Bottom card
     .fromTo(
       hidden,
-      { y: currentHeight + nextHeight, opacity: 0, filter: 'blur(12px)' },
+      { y: nextHeight + 24, opacity: 0, filter: 'blur(12px)' },
       { y: nextHeight + 24, opacity: 1, duration: 0.6, filter: 'blur(0px)' },
-      '-=0.4'
+      '-=0.2'
     );
-}
+};
 
 export const setupInitialState = () => {
   const first = messages[0];
   const second = messages[1];
-
   const firstHeight = getMessageHeight(first);
-  const secondHeight = getMessageHeight(second);
 
+  const tl = gsap.timeline();
+
+  // Set up the first message
   gsap.set(first, { y: 0, opacity: 1 });
-  gsap.set(second, { y: firstHeight + 24, opacity: 1 });
+  gsap.set(first, { y: firstHeight + 48, opacity: 1 });
 
-  container.style.height = `${firstHeight + secondHeight + 24}px`;
+  // Set up the second message (and any subsequent messages) to be hidden below
+  gsap.set(messages.slice(1), { y: firstHeight + 24, opacity: 0 });
+
+  // Set the container height to fit only the first message
+  container.style.height = `${firstHeight}px`;
+
+  // Animate the first message appearing
+  tl.fromTo(
+    first,
+    { opacity: 0, y: 24, filter: 'blur(8px)' },
+    { opacity: 1, y: 0, duration: 0.8, filter: 'blur(0px)', ease: 'power3.out' }
+  ).to(
+    second,
+    {
+      opacity: 1,
+      y: firstHeight + 24,
+      duration: 0.8,
+      filter: 'blur(0px)',
+      ease: 'power3.out',
+    },
+    '+=1'
+  );
 };

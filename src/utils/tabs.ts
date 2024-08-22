@@ -5,6 +5,8 @@ export interface TabsConfig {
   rootMargin?: string;
 }
 
+// Tabs will speed up
+
 export const initializeTabs = ({
   tabsSelector,
   contentsSelector,

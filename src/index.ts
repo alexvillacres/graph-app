@@ -7,6 +7,11 @@ window.Webflow ||= [];
 window.Webflow.push(() => {
   window.addEventListener('load', setupInitialState);
 
+  const conversationContainer = document.querySelector('.conversation_contain') as HTMLElement;
+  const conversationDelay: number = parseInt(conversationContainer.dataset.delay as string);
+  const tabContainer = document.querySelector('.tabs_component') as HTMLElement;
+  const tabDelay: number = parseInt(tabContainer.dataset.tabDuration as string);
+
   const pulesTimeline = gsap.timeline({
     repeat: -1, // Repeat indefinitely
   });
@@ -51,14 +56,14 @@ window.Webflow.push(() => {
   initializeTabs({
     tabsSelector: '.tabs_tab',
     contentsSelector: '.tabs_layout',
-    autoplayDuration: 12, // 5 seconds for autoplay duration
+    autoplayDuration: tabDelay, // 5 seconds for autoplay duration
     rootMargin: '0px',
   });
 
-  window.addEventListener('load', animateCards);
+  window.addEventListener('load', () => animateCards(conversationDelay));
 
   pulesTimeline.add(linearAnimation, 0);
-  pulesTimeline.add(githubAnimation, '-=2');
-  pulesTimeline.add(jiraAnimation, '-=2');
-  pulesTimeline.add(slackAnimation, '-=2');
+  pulesTimeline.add(githubAnimation, '-=1');
+  pulesTimeline.add(jiraAnimation, '-=1');
+  pulesTimeline.add(slackAnimation, '-=1');
 });

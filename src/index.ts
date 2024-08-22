@@ -1,10 +1,13 @@
 import gsap from 'gsap';
 
-import { animatePulse } from '$utils/animation';
+import { animateCards, animatePulse, setupInitialState } from '$utils/animation';
+import { initializeTabs } from '$utils/tabs';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  const masterTimeline = gsap.timeline({
+  window.addEventListener('load', setupInitialState);
+
+  const pulesTimeline = gsap.timeline({
     repeat: -1, // Repeat indefinitely
   });
 
@@ -44,8 +47,18 @@ window.Webflow.push(() => {
     ['110%', '150%', '180%', '200%']
   );
 
-  masterTimeline.add(linearAnimation, 0);
-  masterTimeline.add(githubAnimation, '-=2');
-  masterTimeline.add(jiraAnimation, '-=2');
-  masterTimeline.add(slackAnimation, '-=2');
+  // Initialize the tabs with configuration
+  initializeTabs({
+    tabsSelector: '.tabs_tab',
+    contentsSelector: '.tabs_layout',
+    autoplayDuration: 12, // 5 seconds for autoplay duration
+    rootMargin: '0px',
+  });
+
+  window.addEventListener('load', animateCards);
+
+  pulesTimeline.add(linearAnimation, 0);
+  pulesTimeline.add(githubAnimation, '-=2');
+  pulesTimeline.add(jiraAnimation, '-=2');
+  pulesTimeline.add(slackAnimation, '-=2');
 });

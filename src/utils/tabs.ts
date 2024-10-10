@@ -5,8 +5,6 @@ export interface TabsConfig {
   rootMargin?: string;
 }
 
-// Tabs will speed up
-
 export const initializeTabs = ({
   tabsSelector,
   contentsSelector,
@@ -31,6 +29,7 @@ export const initializeTabs = ({
     }
 
     const newIndex = tabs.indexOf(newTab);
+    console.log(tabs, newIndex);
 
     contents.forEach((content, index) => {
       content.classList.toggle('active', index === newIndex);

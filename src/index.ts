@@ -1,7 +1,8 @@
 import gsap from 'gsap';
 
 import { animateCards, animatePulse, setupInitialState } from '$utils/animation';
-import { initializeTabs } from '$utils/tabs';
+// import { initializeTabs } from '$utils/tabs';
+import { initializeAccordion } from '$utils/timedAccordion';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
@@ -9,8 +10,17 @@ window.Webflow.push(() => {
 
   const conversationContainer = document.querySelector('.conversation_contain') as HTMLElement;
   const conversationDelay: number = parseInt(conversationContainer.dataset.delay as string);
-  const tabContainer = document.querySelector('.tabs_component') as HTMLElement;
-  const tabDelay: number = parseInt(tabContainer.dataset.tabDuration as string);
+  const accordionContainer = document.querySelector('.accordion_component') as HTMLElement;
+  const accordionDelay: number = parseInt(accordionContainer.dataset.delay as string) || 7;
+
+  initializeAccordion({
+    headerSelector: '.accordion_header',
+    textSelector: '.accordion_text',
+    imgSelector: '.accordion_img',
+    progressBarSelector: '.accordion_progress',
+    autoplayDuration: accordionDelay,
+    rootMargin: '0px',
+  });
 
   const pulesTimeline = gsap.timeline({
     repeat: -1, // Repeat indefinitely
@@ -51,14 +61,6 @@ window.Webflow.push(() => {
     ['-100%', '-60%', '-40%', '0%'],
     ['110%', '150%', '180%', '200%']
   );
-
-  // Initialize the tabs with configuration
-  initializeTabs({
-    tabsSelector: '.tabs_tab',
-    contentsSelector: '.tabs_layout',
-    autoplayDuration: tabDelay, // 5 seconds for autoplay duration
-    rootMargin: '0px',
-  });
 
   window.addEventListener('load', () => animateCards(conversationDelay));
 

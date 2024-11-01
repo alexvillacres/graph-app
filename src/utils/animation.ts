@@ -103,7 +103,7 @@ export const setupInitialState = () => {
   gsap.set(second, { opacity: 0, y: firstHeight + 48, filter: 'blur(5px)', force3D: true });
 
   // Set the container height to fit both messages
-  container.style.height = `${firstHeight * 2 + 24}px`;
+  container.style.height = `${firstHeight + 24}px`;
 
   // Animate the first message appearing
   tl.to(first, {

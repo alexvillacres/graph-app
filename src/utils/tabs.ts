@@ -29,7 +29,6 @@ export const initializeTabs = ({
     }
 
     const newIndex = tabs.indexOf(newTab);
-    console.log(tabs, newIndex);
 
     contents.forEach((content, index) => {
       content.classList.toggle('active', index === newIndex);

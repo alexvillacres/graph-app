@@ -1,30 +1,26 @@
 import gsap from 'gsap';
 
 import { animateCards, animatePulse, setupInitialState } from '$utils/animation';
-// import { initializeTabs } from '$utils/tabs';
-import { initializeAccordion } from '$utils/timedAccordion';
 
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  window.addEventListener('load', setupInitialState);
+  if (document.readyState === 'complete') {
+    init();
+  } else {
+    window.addEventListener('load', init);
+  }
+});
 
+function init() {
   const conversationContainer = document.querySelector('.conversation_contain') as HTMLElement;
-  const conversationDelay: number = parseInt(conversationContainer.dataset.delay as string);
-  const accordionContainer = document.querySelector('.accordion_component') as HTMLElement;
-  const accordionDelay: number = parseInt(accordionContainer.dataset.delay as string) || 7;
-
-  initializeAccordion({
-    headerSelector: '.accordion_header',
-    textSelector: '.accordion_text',
-    imgSelector: '.accordion_img',
-    progressBarSelector: '.accordion_progress',
-    autoplayDuration: accordionDelay,
-    rootMargin: '0px',
-  });
+  const conversationDelay: number = parseInt(conversationContainer.dataset.delay as string) || 7;
 
   const pulesTimeline = gsap.timeline({
     repeat: -1, // Repeat indefinitely
   });
+
+  setupInitialState();
+  animateCards(conversationDelay);
 
   const linearAnimation = gsap.timeline();
   animatePulse(
@@ -62,10 +58,8 @@ window.Webflow.push(() => {
     ['110%', '150%', '180%', '200%']
   );
 
-  window.addEventListener('load', () => animateCards(conversationDelay));
-
   pulesTimeline.add(linearAnimation, 0);
   pulesTimeline.add(githubAnimation, '-=1');
   pulesTimeline.add(jiraAnimation, '-=1');
   pulesTimeline.add(slackAnimation, '-=1');
-});
+}

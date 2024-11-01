@@ -1,13 +1,9 @@
 import gsap from 'gsap';
 
-// Slow down the hero animation
-// Start with one card
-
-// Global variables and utility functions
 const container = document.querySelector('.conversation_contain') as HTMLElement;
 const messages = Array.from(container.querySelectorAll('.conversation_card')) as HTMLElement[];
 const getMessageHeight = (message: HTMLElement): number => {
-  return message.offsetHeight;
+  return message.getBoundingClientRect().height;
 };
 
 export function animatePulse(
@@ -41,7 +37,6 @@ export function animatePulse(
 export const animateCards = (rotationDelay: number = 4) => {
   const container = document.querySelector('.conversation_contain') as HTMLElement;
   const messages = Array.from(container.querySelectorAll('.conversation_card')) as HTMLElement[];
-
   let currentIndex = 0;
 
   const current = messages[currentIndex];
@@ -88,7 +83,7 @@ export const animateCards = (rotationDelay: number = 4) => {
     // Bottom card
     .fromTo(
       hidden,
-      { y: nextHeight + 24, opacity: 0, filter: 'blur(12px)' },
+      { y: nextHeight + 24, opacity: 0, filter: 'blur(5px)' },
       { y: nextHeight + 24, opacity: 1, duration: 0.6, filter: 'blur(0px)' },
       '-=0.2'
     );
@@ -101,22 +96,23 @@ export const setupInitialState = () => {
 
   const tl = gsap.timeline();
 
-  // Set up the first message
-  gsap.set(first, { y: 0, opacity: 1 });
-  gsap.set(first, { y: firstHeight + 48, opacity: 1 });
+  // Set initial state for the first message
+  gsap.set(first, { opacity: 0, y: 24, filter: 'blur(5px)' });
 
-  // Set up the second message (and any subsequent messages) to be hidden below
-  gsap.set(messages.slice(1), { y: firstHeight + 24, opacity: 0 });
+  // Set initial state for the second message
+  gsap.set(second, { opacity: 0, y: firstHeight + 48, filter: 'blur(5px)', force3D: true });
 
-  // Set the container height to fit only the first message
-  container.style.height = `${firstHeight}px`;
+  // Set the container height to fit both messages
+  container.style.height = `${firstHeight * 2 + 24}px`;
 
   // Animate the first message appearing
-  tl.fromTo(
-    first,
-    { opacity: 0, y: 24, filter: 'blur(8px)' },
-    { opacity: 1, y: 0, duration: 0.8, filter: 'blur(0px)', ease: 'power3.out' }
-  ).to(
+  tl.to(first, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    filter: 'blur(0px)',
+    ease: 'power3.out',
+  }).to(
     second,
     {
       opacity: 1,
